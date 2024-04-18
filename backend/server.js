@@ -3,8 +3,10 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
-
+import { connectDB as connectionDB } from "./config/connectDB.js";
 import { morganMiddleware, systemLogs } from "./utils/logger.js";
+
+await connectionDB();
 
 const app = express();
 
