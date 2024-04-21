@@ -1,4 +1,5 @@
 import "dotenv/config";
+import fs from "fs";
 import handlebars from "handlebars";
 import path from "path";
 import transporter from "../helpers/emailTransport.js";
@@ -28,5 +29,3 @@ export const sendEmail = async (email, subject, payload, template) => {
     systemLogs.error(`Error sending email: ${error.message}`);
   }
 };
-
-export default sendEmail;

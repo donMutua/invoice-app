@@ -7,6 +7,7 @@ import mongoSanitize from "express-mongo-sanitize";
 import { connectDB as connectionDB } from "./config/connectDB.js";
 import { morganMiddleware, systemLogs } from "./utils/logger.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
+import authRoutes from "./routes/authRoutes.js";
 
 await connectionDB();
 
@@ -31,6 +32,8 @@ app.get("/api/v1/test", (req, res) => {
     message: "Hello world",
   });
 });
+
+app.use("/api/v1/auth", authRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
