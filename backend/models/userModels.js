@@ -1,9 +1,8 @@
 import bcrypt from "bcryptjs";
 import "dotenv/config";
 import mongoose from "mongoose";
-import validator, { isLowercase, trim } from "validator";
+import validator from "validator";
 import { USER } from "../constants/index.js";
-import isEmail from "validator/lib/isEmail";
 
 const { Schema } = mongoose;
 
@@ -116,7 +115,7 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password") || this.isNew) return next();
+  if (!this.isModified("password")) return next();
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
