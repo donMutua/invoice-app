@@ -3,8 +3,10 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
+import mongoSanitize from "express-mongo-sanitize";
 import { connectDB as connectionDB } from "./config/connectDB.js";
 import { morganMiddleware, systemLogs } from "./utils/logger.js";
+import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 await connectionDB();
 
@@ -20,6 +22,8 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(cookieParser());
 
+app.use(mongoSanitize());
+
 app.use(morganMiddleware);
 
 app.get("/api/v1/test", (req, res) => {
@@ -27,6 +31,9 @@ app.get("/api/v1/test", (req, res) => {
     message: "Hello world",
   });
 });
+
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
