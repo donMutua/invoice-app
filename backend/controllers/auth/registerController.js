@@ -75,12 +75,12 @@ const registerUserController = asyncHandler(async (req, res) => {
       link: verificationUrl,
     };
 
-    await sendEmail({
-      email: registeredUser?.email,
-      subject: "Account Verification",
-      template: "./emails/template/accountVerification.handlebars",
-      payload,
-    });
+    await sendEmail(
+      registeredUser.email,
+      "Account Verification",
+      "../emails/template/accountVerification.hbs",
+      payload
+    );
 
     res.json({
       success: true,

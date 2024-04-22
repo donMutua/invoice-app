@@ -9,10 +9,10 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const sendEmail = async (email, subject, payload, template) => {
+export const sendEmail = async (email, subject, template, payload) => {
   try {
     const sourceDirectory = fs.readFileSync(
-      path.join(__dirname, template),
+      path.join(__dirname, "utils", template),
       "utf8"
     );
 
@@ -26,6 +26,6 @@ export const sendEmail = async (email, subject, payload, template) => {
     };
     await transporter.sendMail(emailOptions);
   } catch (error) {
-    systemLogs.error(`Error sending email: ${error.message}`);
+    systemLogs.error(`Error sending email: ${error}`);
   }
 };
