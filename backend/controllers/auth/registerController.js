@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import { v4 as uuidv4 } from "uuid";
+import { randomBytes } from "crypto";
 import User from "../../models/userModels.js";
 import VerifyToken from "../../models/verifyResetTokenModel.js";
 import { sendEmail } from "../../utils/sendEmail.js";
@@ -12,6 +12,11 @@ const validateField = (field, errorMessage) => {
     res.status(400);
     throw new Error(errorMessage);
   }
+};
+
+// Helper function to generate a random token
+const generateHex = () => {
+  return randomBytes(16).toString("hex");
 };
 
 // $-title  Register a new user and send a verification email link
@@ -59,7 +64,7 @@ const registerUserController = asyncHandler(async (req, res) => {
   }
 
   if (registeredUser) {
-    const verificationToken = uuidv4();
+    const verificationToken = generateHex();
 
     console.log(verificationToken);
 

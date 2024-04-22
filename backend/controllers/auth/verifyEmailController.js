@@ -19,7 +19,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  if (user.isVerified) {
+  if (user.isEmailVerified) {
     res.status(400);
     throw new Error("User is already verified, please login");
   }
@@ -29,15 +29,17 @@ const verifyEmail = asyncHandler(async (req, res) => {
     token: req.params.emailToken,
   });
 
+  console.log("userToken", userToken);
+
   if (!userToken) {
     res.status(400);
     throw new Error("Token is invalid or expired");
   }
 
-  user.isVerified = true;
+  user.isEmailVerified = true;
   await user.save();
 
-  if (user.isVerified) {
+  if (user.isEmailVerified) {
     const emailLink = `${domainURL}/login`;
 
     const payload = {
