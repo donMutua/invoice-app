@@ -6,14 +6,6 @@ import { sendEmail } from "../../utils/sendEmail.js";
 
 const domainURL = process.env.DOMAIN;
 
-// Helper function to validate fields
-const validateField = (field, errorMessage) => {
-  if (!field) {
-    res.status(400);
-    throw new Error(errorMessage);
-  }
-};
-
 // Helper function to generate a random token
 const generateHex = () => {
   return randomBytes(16).toString("hex");
@@ -25,6 +17,14 @@ const generateHex = () => {
 // $-auth   Public
 
 const registerUserController = asyncHandler(async (req, res) => {
+  // Helper function to validate fields
+  const validateField = (field, errorMessage) => {
+    if (!field) {
+      res.status(400);
+      throw new Error(errorMessage);
+    }
+  };
+
   const { email, username, firstName, lastName, password, passwordConfirm } =
     req.body;
 

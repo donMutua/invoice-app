@@ -12,6 +12,7 @@ import authRoutes from "./routes/authRoutes.js";
 await connectionDB();
 
 const app = express();
+app.set("trust proxy", 1);
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));

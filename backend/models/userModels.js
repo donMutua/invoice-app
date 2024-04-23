@@ -56,10 +56,9 @@ const userSchema = new Schema(
 
     passwordConfirm: {
       type: String,
-      required: [true, "Please confirm your password"],
       validate: {
-        validator: function (v) {
-          return this.password === v;
+        validator: function (el) {
+          return el === this.password;
         },
         message: "Passwords do not match",
       },
@@ -114,6 +113,12 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password") || this.isNew) return next();
+  this.passwordConfirm = undefined;
+  next();
+});
+
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -131,12 +136,13 @@ userSchema.pre("save", async function (next) {
   let date = new Date(timestamp);
 
   this.passwordChangedAt = date.toISOString();
-  next();
 
-  userSchema.methods.comparePassword = async function (givenPassword) {
-    return await bcrypt.compare(givenPassword, this.password);
-  };
+  next();
 });
+
+userSchema.methods.comparePassword = async function (givenPassword) {
+  return await bcrypt.compare(givenPassword, this.password);
+};
 
 const User = mongoose.model("User", userSchema);
 
