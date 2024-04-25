@@ -17,8 +17,6 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const existingUser = await User.findOne({ email: email }).select("+password");
 
-  console.log("existingUser", existingUser);
-
   if (!existingUser || !(await existingUser.comparePassword(password))) {
     res.status(401);
     systemLogs.error("incorrect email or password");
@@ -58,8 +56,8 @@ const loginUser = asyncHandler(async (req, res) => {
     const cookies = req.cookies;
 
     let newRefreshTokenArray = !cookies?.jwt
-      ? existingUser.refreshToken
-      : existingUser.refreshToken.filter((refT) => refT !== cookies.jwt);
+      ? existingUser.refreshTokens
+      : existingUser.refreshTokens.filter((refT) => refT !== cookies.jwt);
 
     if (cookies?.jwt) {
       const refreshToken = cookies.jwt;
@@ -79,7 +77,7 @@ const loginUser = asyncHandler(async (req, res) => {
       res.clearCookie("jwt", options);
     }
 
-    existingUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+    existingUser.refreshTokens = [...newRefreshTokenArray, newRefreshToken];
 
     await existingUser.save();
 

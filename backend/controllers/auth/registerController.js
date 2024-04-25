@@ -66,8 +66,6 @@ const registerUserController = asyncHandler(async (req, res) => {
   if (registeredUser) {
     const verificationToken = generateHex();
 
-    console.log(verificationToken);
-
     let emailVerificationToken = await new VerifyToken({
       _userId: registeredUser._id,
       token: verificationToken,
