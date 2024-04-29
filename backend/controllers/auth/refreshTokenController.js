@@ -35,7 +35,7 @@ const newAccessToken = asyncHandler(async (req, res) => {
   //find exisiting User
   const existingUser = await User.findById(decoded.id);
 
-  //check if token is valid if its not valid return and empty array of refresh tokens and return error
+  //check if token is valid
   if (!existingUser.refreshTokens.includes(refreshToken))
     return res.sendStatus(401);
 

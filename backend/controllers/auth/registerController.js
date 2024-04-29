@@ -1,15 +1,10 @@
 import asyncHandler from "express-async-handler";
-import { randomBytes } from "crypto";
 import User from "../../models/userModels.js";
 import VerifyToken from "../../models/verifyResetTokenModel.js";
 import { sendEmail } from "../../utils/sendEmail.js";
+import { generateHex } from "../../helpers/generateHex.js";
 
 const domainURL = process.env.DOMAIN;
-
-// Helper function to generate a random token
-const generateHex = () => {
-  return randomBytes(16).toString("hex");
-};
 
 // $-title  Register a new user and send a verification email link
 
