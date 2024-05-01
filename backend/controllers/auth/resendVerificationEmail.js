@@ -16,8 +16,6 @@ const resendEmailVerificationToken = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  console.log("user1", user);
-
   if (!email) {
     res.status(400);
     throw new Error("An email is required");
@@ -32,8 +30,6 @@ const resendEmailVerificationToken = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Your email is already verified");
   }
-
-  console.log("user", user);
 
   let verificationToken = await VerifyResetToken.findOne({ _userId: user._id });
 
