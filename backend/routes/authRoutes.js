@@ -5,6 +5,7 @@ import loginUser from "../controllers/auth/loginController.js";
 import { loginLimiter } from "../middleware/apiLimiter.js";
 import newAccessToken from "../controllers/auth/refreshTokenController.js";
 import resendEmailVerificationToken from "../controllers/auth/resendVerificationEmail.js";
+import logoutUser from "../controllers/auth/logoutController.js";
 
 import {
   resetPassword,
@@ -21,5 +22,6 @@ router.post("/reset_password", resetPassword);
 
 router.get("/verify/:emailToken/:userId", verifyUserEmail);
 router.get("/new_access_token", newAccessToken);
+router.get("/logout", logoutUser);
 
 export default router;
