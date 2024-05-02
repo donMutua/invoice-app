@@ -8,7 +8,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     return res.status(204).json({ error: "No Cookies Found" });
   }
 
-  const refreshTokens = cookies.jwt;
+  const refreshTokens = cookies?.jwt;
 
   const existingUser = await User.findOne({ refreshTokens });
 
