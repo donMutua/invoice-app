@@ -18,9 +18,7 @@ const resetPasswordRequest = asyncHandler(async (req, res) => {
     throw new Error("An email is required");
   }
 
-  console.log("Finding user");
   const existingUser = await User.findOne({ email }).select("-passwordConfirm");
-  console.log("User found", existingUser);
 
   if (!existingUser) {
     res.status(400);
@@ -46,15 +44,12 @@ const resetPasswordRequest = asyncHandler(async (req, res) => {
       token: newToken,
     }).save();
 
-    const emailLink = `${domainURL}/api/v1/auth/verify/${verificationToken.token}/${existingUser._id}`;
+    const emailLink = `${domainURL}/auth/verify/${verificationToken.token}/${existingUser._id}`;
 
     const payload = {
       name: existingUser?.firstName,
       link: emailLink,
     };
-
-    console.log("payload", payload);
-    console.log("existingUserEmail", existingUser.email);
 
     await sendEmail(
       existingUser.email,
@@ -87,8 +82,8 @@ const resetPasswordRequest = asyncHandler(async (req, res) => {
     createdAt: Date.now(),
   }).save();
 
-  if (existingUser && existingUser.isEmailVerified) {
-    const emailLink = `${domainURL}/api/v1/auth/reset_password?emailToken=${newVerificationToken.token}&userId=${existingUser._id}`;
+  if (existingUser) {
+    const emailLink = `${domainURL}/auth/reset_password?emailToken=${newVerificationToken.token}&userId=${existingUser._id}`;
 
     const payload = {
       name: existingUser?.firstName,
@@ -98,7 +93,7 @@ const resetPasswordRequest = asyncHandler(async (req, res) => {
     await sendEmail(
       existingUser.email,
       "Password Reset",
-      "./emails/template/resetPasswordRequest.hbs",
+      "../emails/template/requestResetPassword.hbs",
       payload
     );
 
@@ -114,7 +109,7 @@ const resetPasswordRequest = asyncHandler(async (req, res) => {
 // $-auth   Public
 
 const resetPassword = asyncHandler(async (req, res) => {
-  const { emailToken, userId, password, passwordConfirm } = req.body;
+  const { userId, emailToken, password, passwordConfirm } = req.body;
 
   if (!password) {
     res.status(400);
@@ -136,7 +131,13 @@ const resetPassword = asyncHandler(async (req, res) => {
     throw new Error("Password must be at least 8 characters long");
   }
 
-  const passwordResetToken = await VerificationToken.findOne({ userId });
+  if (!userId) {
+    res.status(400);
+    throw new Error("");
+  }
+  let passwordResetToken = await VerificationToken.findOne({
+    _userId: userId,
+  });
 
   if (!passwordResetToken) {
     res.status(400);
@@ -158,7 +159,7 @@ const resetPassword = asyncHandler(async (req, res) => {
     await sendEmail(
       user.email,
       "Password Reset Successful",
-      "./emails/template/resetPassword.hbs",
+      "../emails/template/resetPassword.hbs",
       payload
     );
 

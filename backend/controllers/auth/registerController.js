@@ -66,7 +66,7 @@ const registerUserController = asyncHandler(async (req, res) => {
       token: verificationToken,
     }).save();
 
-    const verificationUrl = `${domainURL}/api/v1/auth/verify/${emailVerificationToken.token}/${registeredUser._id}`;
+    const verificationUrl = `${domainURL}/auth/verify/${emailVerificationToken.token}/${registeredUser._id}`;
 
     const payload = {
       name: registeredUser?.firstName,

@@ -29,8 +29,6 @@ const verifyEmail = asyncHandler(async (req, res) => {
     token: req.params.emailToken,
   });
 
-  console.log("userToken", userToken);
-
   if (!userToken) {
     res.status(400);
     throw new Error("Token is invalid or expired");
