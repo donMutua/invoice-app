@@ -1,23 +1,10 @@
 import asyncHandler from "express-async-handler";
-import { randomBytes } from "crypto";
 import User from "../../models/userModels.js";
 import VerifyToken from "../../models/verifyResetTokenModel.js";
 import { sendEmail } from "../../utils/sendEmail.js";
+import { generateHex } from "../../helpers/generateHex.js";
 
 const domainURL = process.env.DOMAIN;
-
-// Helper function to validate fields
-const validateField = (field, errorMessage) => {
-  if (!field) {
-    res.status(400);
-    throw new Error(errorMessage);
-  }
-};
-
-// Helper function to generate a random token
-const generateHex = () => {
-  return randomBytes(16).toString("hex");
-};
 
 // $-title  Register a new user and send a verification email link
 
@@ -25,6 +12,14 @@ const generateHex = () => {
 // $-auth   Public
 
 const registerUserController = asyncHandler(async (req, res) => {
+  // Helper function to validate fields
+  const validateField = (field, errorMessage) => {
+    if (!field) {
+      res.status(400);
+      throw new Error(errorMessage);
+    }
+  };
+
   const { email, username, firstName, lastName, password, passwordConfirm } =
     req.body;
 
@@ -66,14 +61,12 @@ const registerUserController = asyncHandler(async (req, res) => {
   if (registeredUser) {
     const verificationToken = generateHex();
 
-    console.log(verificationToken);
-
     let emailVerificationToken = await new VerifyToken({
       _userId: registeredUser._id,
       token: verificationToken,
     }).save();
 
-    const verificationUrl = `${domainURL}/api/v1/auth/verify/${emailVerificationToken.token}/${registeredUser._id}`;
+    const verificationUrl = `${domainURL}/auth/verify/${emailVerificationToken.token}/${registeredUser._id}`;
 
     const payload = {
       name: registeredUser?.firstName,

@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler";
-import jwt, { decode } from "jsonwebtoken";
-import User from "../models/userModel.js";
+import jwt from "jsonwebtoken";
+import User from "../models/userModels.js";
 
 const checkAuth = asyncHandler(async (req, res, next) => {
   let jwtToken;
@@ -16,14 +16,21 @@ const checkAuth = asyncHandler(async (req, res, next) => {
   if (authHeader && authHeader.startsWith("Bearer")) {
     jwtToken = authHeader.split(" ")[1];
 
-    jwt.verify(jwtToken, process.env.JWT_SECRET, async (err, decoded) => {
-      if (err) return res.status(403);
+    jwt.verify(
+      jwtToken,
+      process.env.JWT_ACCESS_SECRET_KEY,
+      async (err, decoded) => {
+        if (err) {
+          res.status(403).json({ message: "Invalid or expired token" });
+          return;
+        }
 
-      const userId = decoded.id;
-      req.user = await User.findById(userId).select("-password");
-      req.roles = decoded.roles;
-      next();
-    });
+        const userId = decoded.id;
+        req.user = await User.findById(userId).select("-password");
+        req.roles = decoded.roles;
+        next();
+      }
+    );
   }
 });
 
