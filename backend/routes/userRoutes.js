@@ -3,6 +3,7 @@ import getUserProfile from "../controllers/user/getUserProfile.js";
 import updateUserProfile from "../controllers/user/updateUserProfile.js";
 import deleteMyAccount from "../controllers/user/deleteMyAccount.js";
 import getAllUserAccounts from "../controllers/user/getAllUserAccounts.js";
+import deleteUserAccount from "../controllers/user/deleteUserAccount.js";
 
 import role from "../middleware/rolesMiddleware.js";
 import checkAuth from "../middleware/checkAuthMiddleware.js";
@@ -17,6 +18,12 @@ router.get(
   checkAuth,
   role.checkRoles(role.ROLES.Admin),
   getAllUserAccounts
+);
+router.delete(
+  "/:id",
+  checkAuth,
+  role.checkRoles(role.ROLES.Admin),
+  deleteUserAccount
 );
 
 export default router;
