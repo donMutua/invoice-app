@@ -4,6 +4,7 @@ import updateUserProfile from "../controllers/user/updateUserProfile.js";
 import deleteMyAccount from "../controllers/user/deleteMyAccount.js";
 import getAllUserAccounts from "../controllers/user/getAllUserAccounts.js";
 import deleteUserAccount from "../controllers/user/deleteUserAccount.js";
+import deactivateUser from "../controllers/user/deactivateUser.js";
 
 import role from "../middleware/rolesMiddleware.js";
 import checkAuth from "../middleware/checkAuthMiddleware.js";
@@ -24,6 +25,13 @@ router.delete(
   checkAuth,
   role.checkRoles(role.ROLES.Admin),
   deleteUserAccount
+);
+
+router.patch(
+  "/:id/deactivate",
+  checkAuth,
+  role.checkRoles(role.ROLES.Admin),
+  deactivateUser
 );
 
 export default router;
