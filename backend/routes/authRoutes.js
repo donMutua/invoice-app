@@ -6,7 +6,6 @@ import { loginLimiter } from "../middleware/apiLimiter.js";
 import newAccessToken from "../controllers/auth/refreshTokenController.js";
 import resendEmailVerificationToken from "../controllers/auth/resendVerificationEmail.js";
 import logoutUser from "../controllers/auth/logoutController.js";
-
 import {
   resetPassword,
   resetPasswordRequest,
