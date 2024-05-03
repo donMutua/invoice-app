@@ -27,10 +27,12 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
+  // Check if any of the fields in the request body are non-updatable
   const invalidFields = nonUpdatableFields.filter((field) =>
     fieldsToUpdate.includes(field)
   );
 
+  // If there are invalid fields, throw an error
   if (invalidFields.length > 0) {
     res.status(400);
     throw new Error(
