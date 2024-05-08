@@ -9,11 +9,12 @@ WORKDIR ${APP_HOME}
 COPY package*.json ./
 COPY tsconfig.json ./
 
-RUN npm install
+RUN npm install -g pnpm
+RUN pnpm install
 
 COPY . ${APP_HOME}
 
 EXPOSE 8080 443
 
-CMD ["npm","run", "dev"]
+CMD ["pnpm","run", "dev"]
 
