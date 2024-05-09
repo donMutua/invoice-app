@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Toaster } from "@/components/ui/toaster";
 
 type AuthLayoutProps = {
   children: React.ReactNode;
@@ -19,6 +20,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
       <div className="flex flex-col items-center justify-center w-full px-4 py-8 sm:px-0 sm:max-w-lg">
         <div className="w-full p-12 bg-white rounded-lg shadow-md">
           {children}
+          <Toaster />
         </div>
       </div>
     </div>
