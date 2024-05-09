@@ -3,10 +3,13 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
+import cors from "cors";
 import mongoSanitize from "express-mongo-sanitize";
+
 import { connectDB as connectionDB } from "./config/connectDB.js";
 import { morganMiddleware, systemLogs } from "./utils/logger.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
+
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import { apiLimiter } from "./middleware/apiLimiter.js";
@@ -15,6 +18,7 @@ await connectionDB();
 
 const app = express();
 app.set("trust proxy", 1);
+app.use(cors());
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));

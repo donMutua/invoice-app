@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { passwordStrength } from "check-password-strength";
 
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Form,
   FormControl,
@@ -16,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import PasswordInput from "@/components/passwordInput";
 import { useEffect, useState } from "react";
 import ShowPassStrength from "@/components/ShowPassStrength";
+import { registerUser } from "@/app/apiService";
 
 let formSchema = z
   .object({
@@ -33,18 +35,19 @@ let formSchema = z
     password: z.string().min(8, {
       message: "Password must be at least 8 characters.",
     }),
-    confirmPassword: z.string().min(8, {
+    passwordConfirm: z.string().min(8, {
       message: "Password must be at least 8 characters.",
     }),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.password === data.passwordConfirm, {
     message: "Passwords must match.",
-    path: ["confirmPassword"],
+    path: ["passwordConfirm"],
   });
 
 type strength = 0 | 1 | 2 | 3;
 
 export default function Registration() {
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [strength, setStrength] = useState<strength>(0);
@@ -52,22 +55,47 @@ export default function Registration() {
   // Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+
+    defaultValues: {
+      email: "",
+      username: "",
+      firstName: "",
+      lastName: "",
+      password: "",
+      passwordConfirm: "",
+    },
   });
 
   const password = form.watch("password");
 
   useEffect(() => {
     // This code will run whenever the password changes
-    console.log(password);
+
     setStrength(passwordStrength(password).id as strength);
   }, [password]);
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await registerUser(values);
 
-    console.log(values);
+      console.log(response, "response");
+
+      toast({
+        title: "Registration Successful",
+        description: `${response?.message}`,
+      });
+
+      form.reset();
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || error.message;
+
+      toast({
+        title: "Registration Failed",
+
+        variant: "destructive",
+        description: `${errorMessage}`,
+      });
+    }
   }
 
   return (
@@ -133,7 +161,7 @@ export default function Registration() {
 
         <FormField
           control={form.control}
-          name="confirmPassword"
+          name="passwordConfirm"
           render={({ field }) => (
             <FormItem>
               <FormControl>
