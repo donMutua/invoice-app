@@ -1,8 +1,8 @@
 "use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { passwordStrength } from "check-password-strength";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +13,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import PasswordInput from "@/components/passwordInput";
+import { useEffect, useState } from "react";
+import ShowPassStrength from "@/components/ShowPassStrength";
 
 let formSchema = z
   .object({
@@ -39,19 +42,31 @@ let formSchema = z
     path: ["confirmPassword"],
   });
 
+type strength = 0 | 1 | 2 | 3;
+
 export default function Registration() {
-  // 1. Define your form.
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [strength, setStrength] = useState<strength>(0);
+
+  // Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: "",
-    },
   });
+
+  const password = form.watch("password");
+
+  useEffect(() => {
+    // This code will run whenever the password changes
+    console.log(password);
+    setStrength(passwordStrength(password).id as strength);
+  }, [password]);
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
+
     console.log(values);
   }
 
@@ -103,9 +118,15 @@ export default function Registration() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="Password" type="password" {...field} />
+                <PasswordInput
+                  placeholder="Enter Password"
+                  showPassword={showPassword}
+                  setShowPassword={() => setShowPassword((prev) => !prev)}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
+              <ShowPassStrength strength={strength} />
             </FormItem>
           )}
         />
@@ -116,9 +137,12 @@ export default function Registration() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input
+                <PasswordInput
                   placeholder="Confirm Password"
-                  type="password"
+                  showPassword={showConfirmPassword}
+                  setShowPassword={() =>
+                    setShowConfirmPassword((prev) => !prev)
+                  }
                   {...field}
                 />
               </FormControl>
@@ -139,7 +163,9 @@ export default function Registration() {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className="w-full">
+          Submit
+        </Button>
       </form>
     </Form>
   );
