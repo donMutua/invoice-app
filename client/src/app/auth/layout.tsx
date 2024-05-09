@@ -1,12 +1,25 @@
+import Image from "next/image";
+
 type AuthLayoutProps = {
   children: React.ReactNode;
 };
 
 const AuthLayout = ({ children }: AuthLayoutProps) => {
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="w-full max-w-lg p-10 bg-white rounded-lg shadow-lg">
-        {children}
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="flex flex-col  items-center justify-center w-full h-20 ">
+        <Image
+          src="/finchwised.png"
+          width={200}
+          height={200}
+          alt="finchwise logo"
+          className="rounded-sm"
+        />
+      </div>
+      <div className="flex flex-col items-center justify-center w-full px-4 py-8 sm:px-0 sm:max-w-lg">
+        <div className="w-full p-12 bg-white rounded-lg shadow-md">
+          {children}
+        </div>
       </div>
     </div>
   );
