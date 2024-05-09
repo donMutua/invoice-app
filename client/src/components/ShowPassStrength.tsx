@@ -5,7 +5,7 @@ interface ShowPassStrengthProps {
 }
 const ShowPassStrength = ({ strength }: ShowPassStrengthProps) => {
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3 mt-2">
       {Array.from({ length: strength + 1 }).map((i, index) => (
         <div
           key={index}
