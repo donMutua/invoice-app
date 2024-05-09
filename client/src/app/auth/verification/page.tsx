@@ -1,9 +1,8 @@
 "use client";
 import { type FC } from "react";
+import Link from "next/link";
 import { RocketIcon } from "@radix-ui/react-icons";
 import { useAppSelector } from "@/redux/hooks/useAppSelector";
-
-useAppSelector;
 
 const Verification: FC = () => {
   const email = useAppSelector((state) => state.verifyEmail.email);
@@ -20,6 +19,11 @@ const Verification: FC = () => {
         </span>
         . Please check your inbox and click on the link to verify your account.
       </h1>
+      <Link href="/auth/login">
+        <span className="text-primary underline font-semibold">
+          Go back to login
+        </span>
+      </Link>
     </div>
   );
 };
