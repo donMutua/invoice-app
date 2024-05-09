@@ -1,8 +1,12 @@
 "use client";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { passwordStrength } from "check-password-strength";
+
+import { setEmail } from "@/redux/features/verify-email-slice";
+import { useAppDispatch } from "@/redux/hooks/useAppDispatch";
 
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import PasswordInput from "@/components/passwordInput";
 import { useEffect, useState } from "react";
 import ShowPassStrength from "@/components/ShowPassStrength";
-import { registerUser } from "@/app/apiService";
+import { registerUser } from "@/services/apiService";
 
 let formSchema = z
   .object({
@@ -48,6 +52,8 @@ type strength = 0 | 1 | 2 | 3;
 
 export default function Registration() {
   const { toast } = useToast();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [strength, setStrength] = useState<strength>(0);
@@ -77,21 +83,18 @@ export default function Registration() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const response = await registerUser(values);
-
-      console.log(response, "response");
-
       toast({
         title: "Registration Successful",
         description: `${response?.message}`,
       });
 
-      form.reset();
+      dispatch(setEmail(values.email));
+      router.push("/auth/verification");
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message;
 
       toast({
         title: "Registration Failed",
-
         variant: "destructive",
         description: `${errorMessage}`,
       });
