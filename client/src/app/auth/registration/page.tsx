@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import PasswordInput from "@/components/passwordInput";
 import { useEffect, useState } from "react";
 import ShowPassStrength from "@/components/ShowPassStrength";
-import { registerUser } from "@/services/apiService";
+import { registerUser } from "@/lib/api";
 
 let formSchema = z
   .object({
